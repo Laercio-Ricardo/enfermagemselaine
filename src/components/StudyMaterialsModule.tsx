@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Markdown from 'react-markdown';
 import { generateStudySummaryAI } from '../services/geminiService';
 import {
   BookOpen,
@@ -306,21 +307,8 @@ export const StudyMaterialsModule: React.FC<StudyMaterialsModuleProps> = ({
               )}
 
               {/* Main Content Markdown Render */}
-              <div className="prose prose-slate dark:prose-invert max-w-none text-xs sm:text-sm leading-relaxed space-y-4 pt-2">
-                {selectedArticle.contentMarkdown.split('\n\n').map((paragraph, pIdx) => {
-                  if (paragraph.startsWith('###')) {
-                    return (
-                      <h3 key={pIdx} className="text-base font-bold text-slate-900 dark:text-white font-display pt-2 border-b border-rose-100 dark:border-slate-800 pb-1">
-                        {paragraph.replace('###', '').trim()}
-                      </h3>
-                    );
-                  }
-                  return (
-                    <p key={pIdx} className="text-slate-700 dark:text-slate-300 whitespace-pre-line">
-                      {paragraph}
-                    </p>
-                  );
-                })}
+              <div className="markdown-content text-slate-800 dark:text-slate-100 text-sm leading-relaxed space-y-3 pt-2 [&_strong]:font-bold [&_strong]:text-slate-900 dark:[&_strong]:text-white [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-1 [&_h1]:text-lg [&_h1]:font-extrabold [&_h1]:text-slate-900 dark:[&_h1]:text-white [&_h1]:my-3 [&_h2]:text-base [&_h2]:font-bold [&_h2]:text-slate-900 dark:[&_h2]:text-white [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:border-b [&_h2]:border-rose-100 dark:[&_h2]:border-slate-800 [&_h2]:pb-1 [&_h3]:text-sm [&_h3]:font-bold [&_h3]:mt-3 [&_h3]:mb-1 [&_hr]:my-4 [&_hr]:border-rose-200 dark:[&_hr]:border-slate-800">
+                <Markdown>{selectedArticle.contentMarkdown}</Markdown>
               </div>
 
               {/* Bottom Actions */}

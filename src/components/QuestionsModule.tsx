@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Markdown from 'react-markdown';
 import { generateQuestionAI } from '../services/geminiService';
 import {
   BookOpen,
@@ -429,9 +430,9 @@ export const QuestionsModule: React.FC<QuestionsModuleProps> = ({
                 <Award className="w-4 h-4" />
                 <span>Comentário Técnico & Legislação Aplicada</span>
               </h4>
-              <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                {currentQ.explanation}
-              </p>
+              <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed [&_strong]:font-bold [&_p]:my-1.5 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:my-0.5">
+                <Markdown>{currentQ.explanation}</Markdown>
+              </div>
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Markdown from 'react-markdown';
 import { askTutorAI } from '../services/geminiService';
 import {
   Bot,
@@ -154,13 +155,19 @@ export const AITutorModule: React.FC = () => {
 
                 <div className={`max-w-[82%] space-y-1 ${isUser ? 'items-end' : 'items-start'}`}>
                   <div
-                    className={`p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-line shadow-2xs ${
+                    className={`p-4 rounded-2xl text-sm leading-relaxed shadow-2xs ${
                       isUser
-                        ? 'bg-rose-600 text-white rounded-tr-none'
+                        ? 'bg-rose-600 text-white rounded-tr-none whitespace-pre-wrap'
                         : 'bg-rose-50/70 dark:bg-slate-900 text-slate-800 dark:text-slate-100 rounded-tl-none border border-rose-100 dark:border-slate-700/80'
                     }`}
                   >
-                    {msg.content}
+                    {isUser ? (
+                      msg.content
+                    ) : (
+                      <div className="markdown-content text-slate-800 dark:text-slate-100 space-y-2.5 [&_strong]:font-bold [&_strong]:text-slate-900 dark:[&_strong]:text-white [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:my-1 [&_h1]:text-base [&_h1]:font-bold [&_h2]:text-base [&_h2]:font-bold [&_h3]:text-sm [&_h3]:font-bold [&_hr]:my-3 [&_hr]:border-rose-200 dark:[&_hr]:border-slate-700">
+                        <Markdown>{msg.content}</Markdown>
+                      </div>
+                    )}
                   </div>
                   <span className="text-[10px] text-slate-400 px-1">{msg.timestamp}</span>
                 </div>
