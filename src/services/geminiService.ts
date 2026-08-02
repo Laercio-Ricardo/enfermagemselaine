@@ -14,13 +14,13 @@ const getDirectGeminiClient = () => {
 };
 
 // 1. Tutor Chat
-export async function askTutorAI(message: string, history: any[]): Promise<string> {
+export async function askTutorAI(message: string, history: any[], userName?: string): Promise<string> {
   try {
     // Try Server API route first
     const res = await fetch('/api/gemini/tutor', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, history }),
+      body: JSON.stringify({ message, history, userName }),
     });
 
     if (res.ok) {
@@ -33,7 +33,9 @@ export async function askTutorAI(message: string, history: any[]): Promise<strin
 
   // Fallback: Direct Client-Side call for Netlify / Static hosting
   const ai = getDirectGeminiClient();
-  const systemInstruction = `Você é o "Professor Lalá", um Enfermeiro Mestre e tutor especialista dedicado em preparar candidatos e estudantes para exames e concursos de Técnico em Enfermagem.
+  const userNameContext = userName ? `\n\nIMPORTANTE: O(a) estudante se chama "${userName}". Chame-o(a) pelo nome "${userName}" com frequência para manter o atendimento altamente personalizado, acolhedor e motivador!` : '';
+
+  const systemInstruction = `Você é o "Professor Lalá", um Enfermeiro Mestre e tutor especialista dedicado em preparar candidatos e estudantes para exames e concursos de Técnico em Enfermagem.${userNameContext}
 Sua comunicação deve ser encorajadora, didática, precisa e fundamentada na legislação e diretrizes da saúde brasileira (COFEN, COREN, Ministério da Saúde, ANVISA, PNI/SUS).
 Sempre responda em Português do Brasil com explicações passo a passo (especialmente em cálculo de medicamentos, gotejamento de soro, interpretação de sinais vitais e procedimentos técnicos). Use emojis amigáveis e tópicos claros.`;
 

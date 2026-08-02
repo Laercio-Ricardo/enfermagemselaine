@@ -76,10 +76,12 @@ Retorne ESTRITAMENTE um JSON no seguinte formato (sem formatação markdown envo
 // API: 24/7 Nursing AI Tutor Chat
 app.post('/api/gemini/tutor', async (req, res) => {
   try {
-    const { message, history } = req.body;
+    const { message, history, userName } = req.body;
     const ai = getGeminiClient();
 
-    const systemInstruction = `Você é o "Professor Lalá", um Enfermeiro Mestre e tutor especialista dedicado em preparar candidatos e estudantes para exames e concursos de Técnico em Enfermagem.
+    const userNameContext = userName ? `\n\nIMPORTANTE: O(a) estudante se chama "${userName}". Chame-o(a) pelo nome "${userName}" com frequência nas respostas para manter o atendimento altamente personalizado, acolhedor e motivador!` : '';
+
+    const systemInstruction = `Você é o "Professor Lalá", um Enfermeiro Mestre e tutor especialista dedicado em preparar candidatos e estudantes para exames e concursos de Técnico em Enfermagem.${userNameContext}
 Sua comunicação deve ser encorajadora, didática, precisa e fundamentada na legislação e diretrizes da saúde brasileira (COFEN, COREN, Ministério da Saúde, ANVISA, PNI/SUS).
 Sempre responda em Português do Brasil com explicações passo a passo (especialmente em cálculo de medicamentos, gotejamento de soro, interpretação de sinais vitais e procedimentos técnicos). Use emojis amigáveis e tópicos claros.`;
 

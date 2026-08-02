@@ -14,7 +14,8 @@ import {
   Flame,
   Bell,
   Smartphone,
-  Library
+  Library,
+  Image as ImageIcon
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -27,6 +28,7 @@ interface NavbarProps {
   onOpenSync: () => void;
   onOpenNotifications: () => void;
   onOpenAppInstallGuide: () => void;
+  onOpenWallpaper?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -39,6 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSync,
   onOpenNotifications,
   onOpenAppInstallGuide,
+  onOpenWallpaper,
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Painel', icon: BarChart3 },
@@ -149,6 +152,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <CloudCheck className="w-4 h-4 text-rose-600 dark:text-rose-400" />
             </button>
+
+            {/* Wallpaper Button */}
+            {onOpenWallpaper && (
+              <button
+                onClick={onOpenWallpaper}
+                className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
+                title="Papel de Parede do App (Foto Personalizada)"
+              >
+                <ImageIcon className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+              </button>
+            )}
 
             {/* Dark Mode Toggle */}
             <button

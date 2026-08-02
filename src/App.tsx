@@ -16,6 +16,7 @@ import { StudyMaterialsModule } from './components/StudyMaterialsModule';
 import { SyncBackupModal } from './components/SyncBackupModal';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
 import { AppInstallGuideModal } from './components/AppInstallGuideModal';
+import { WallpaperModal } from './components/WallpaperModal';
 
 import { AppState, Question, Flashcard, ScheduleItem, WeeklyReportData, StudyArticle, SubjectCategory } from './types';
 import { INITIAL_APP_STATE } from './data/initialData';
@@ -23,6 +24,9 @@ import { calculateSM2 } from './utils/sm2';
 
 const LOCAL_STORAGE_KEY = 'enfermagem_pro_app_state_v1';
 const DARK_MODE_KEY = 'enfermagem_pro_dark_mode';
+const WALLPAPER_KEY = 'enfermagem_pro_wallpaper';
+const WALLPAPER_OPACITY_KEY = 'enfermagem_pro_wallpaper_opacity';
+const WALLPAPER_BLUR_KEY = 'enfermagem_pro_wallpaper_blur';
 
 export default function App() {
   // Load initial state from LocalStorage or Fallback
@@ -55,6 +59,85 @@ export default function App() {
   const [isSyncOpen, setIsSyncOpen] = useState<boolean>(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
   const [isAppInstallOpen, setIsAppInstallOpen] = useState<boolean>(false);
+  const [isWallpaperOpen, setIsWallpaperOpen] = useState<boolean>(false);
+
+  // Wallpaper state
+  const [wallpaper, setWallpaperState] = useState<string>(() => {
+    return localStorage.getItem(WALLPAPER_KEY) || '';
+  });
+  const [wallpaperOpacity, setWallpaperOpacityState] = useState<number>(() => {
+    const saved = localStorage.getItem(WALLPAPER_OPACITY_KEY);
+    return saved ? parseFloat(saved) : 0.35;
+  });
+  const [wallpaperBlur, setWallpaperBlurState] = useState<number>(() => {
+    const saved = localStorage.getItem(WALLPAPER_BLUR_KEY);
+    return saved ? parseInt(saved, 10) : 2;
+  });
+
+  const setWallpaper = (url: string) => {
+    setWallpaperState(url);
+    if (url) {
+      localStorage.setItem(WALLPAPER_KEY, url);
+    } else {
+      localStorage.removeItem(WALLPAPER_KEY);
+    }
+  };
+
+  const setWallpaperOpacity = (val: number) => {
+    setWallpaperOpacityState(val);
+    localStorage.setItem(WALLPAPER_OPACITY_KEY, val.toString());
+  };
+
+  const setWallpaperBlur = (val: number) => {
+    setWallpaperBlurState(val);
+    localStorage.setItem(WALLPAPER_BLUR_KEY, val.toString());
+  };
+
+  // PWA install prompt state
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isAppInstalled, setIsAppInstalled] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsAppInstalled(true);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallAppClick = async () => {
+    if (deferredPrompt) {
+      try {
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice?.outcome === 'accepted') {
+          setIsAppInstalled(true);
+        }
+        setDeferredPrompt(null);
+      } catch (err) {
+        console.error('PWA install error:', err);
+        setIsAppInstallOpen(true);
+      }
+    } else {
+      setIsAppInstallOpen(true);
+    }
+  };
 
   // Daily auto update state
   const [isUpdatingDaily, setIsUpdatingDaily] = useState<boolean>(false);
@@ -305,8 +388,20 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-rose-50/20 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
+    <div className="relative min-h-screen bg-rose-50/20 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
       
+      {/* Background Custom Wallpaper layer */}
+      {wallpaper && (
+        <div
+          className="fixed inset-0 z-0 pointer-events-none transition-all duration-300 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url("${wallpaper}")`,
+            opacity: wallpaperOpacity,
+            filter: `blur(${wallpaperBlur}px)`,
+          }}
+        />
+      )}
+
       {/* Top Navigation Bar */}
       <Navbar
         activeTab={activeTab}
@@ -317,7 +412,8 @@ export default function App() {
         streakDays={7}
         onOpenSync={() => setIsSyncOpen(true)}
         onOpenNotifications={() => setIsNotificationsOpen(true)}
-        onOpenAppInstallGuide={() => setIsAppInstallOpen(true)}
+        onOpenAppInstallGuide={handleInstallAppClick}
+        onOpenWallpaper={() => setIsWallpaperOpen(true)}
       />
 
       {/* Floating Daily Auto-Update Notification Banner */}
@@ -433,6 +529,20 @@ export default function App() {
       <AppInstallGuideModal
         isOpen={isAppInstallOpen}
         onClose={() => setIsAppInstallOpen(false)}
+        deferredPrompt={deferredPrompt}
+        onInstallDirect={handleInstallAppClick}
+        isInstalled={isAppInstalled}
+      />
+
+      <WallpaperModal
+        isOpen={isWallpaperOpen}
+        onClose={() => setIsWallpaperOpen(false)}
+        wallpaper={wallpaper}
+        setWallpaper={setWallpaper}
+        wallpaperOpacity={wallpaperOpacity}
+        setWallpaperOpacity={setWallpaperOpacity}
+        wallpaperBlur={wallpaperBlur}
+        setWallpaperBlur={setWallpaperBlur}
       />
 
     </div>

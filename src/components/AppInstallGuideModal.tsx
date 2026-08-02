@@ -17,15 +17,23 @@ import {
 interface AppInstallGuideModalProps {
   isOpen: boolean;
   onClose: () => void;
+  deferredPrompt?: any;
+  onInstallDirect?: () => void;
+  isInstalled?: boolean;
 }
 
 export const AppInstallGuideModal: React.FC<AppInstallGuideModalProps> = ({
   isOpen,
   onClose,
+  deferredPrompt,
+  onInstallDirect,
+  isInstalled,
 }) => {
   const [activePlatform, setActivePlatform] = useState<'android' | 'ios' | 'desktop' | 'store'>('android');
 
   if (!isOpen) return null;
+
+  const isInIframe = window.self !== window.top;
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
@@ -39,10 +47,10 @@ export const AppInstallGuideModal: React.FC<AppInstallGuideModalProps> = ({
             </div>
             <div>
               <h3 className="text-xl font-extrabold text-slate-900 dark:text-white font-display">
-                Transformar em Aplicativo Mobile
+                Instalar Aplicativo (PWA)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Acesse a plataforma como aplicativo nativo no celular ou computador, inclusive sem internet!
+                Acesse como aplicativo no celular ou computador, inclusive offline!
               </p>
             </div>
           </div>
@@ -53,6 +61,42 @@ export const AppInstallGuideModal: React.FC<AppInstallGuideModalProps> = ({
             ×
           </button>
         </div>
+
+        {/* Direct One-Click Install Banner if prompt available */}
+        {deferredPrompt ? (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+              <p className="font-extrabold text-sm flex items-center space-x-2">
+                <Sparkles className="w-4 h-4 text-amber-300" />
+                <span>Instalação Automática Pronta!</span>
+              </p>
+              <p className="text-xs text-teal-100 mt-0.5">
+                Seu navegador oferece suporte à instalação em 1 clique.
+              </p>
+            </div>
+            <button
+              onClick={onInstallDirect}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white text-teal-800 hover:bg-teal-50 font-extrabold text-xs shadow-md transition-all flex items-center justify-center space-x-2 shrink-0"
+            >
+              <Download className="w-4 h-4 text-teal-600" />
+              <span>Instalar Agora no Celular/PC</span>
+            </button>
+          </div>
+        ) : isInstalled ? (
+          <div className="p-3.5 rounded-2xl bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 text-teal-800 dark:text-teal-300 text-xs font-bold flex items-center space-x-2">
+            <CheckCircle2 className="w-5 h-5 text-teal-600 shrink-0" />
+            <span>O aplicativo Enfermagem Pro já está instalado no seu dispositivo!</span>
+          </div>
+        ) : isInIframe ? (
+          <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs space-y-1">
+            <p className="font-bold flex items-center space-x-1.5">
+              <span>💡 Nota para Instalação no Celular / Netlify:</span>
+            </p>
+            <p className="opacity-90">
+              Para instalar direto pelo Chrome no Android ou Safari no iPhone, abra o link do seu site público (ex: <strong className="underline">selaine.netlify.app</strong>) diretamente no navegador fora do visualizador do editor.
+            </p>
+          </div>
+        ) : null}
 
         {/* Platform Selection Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-100 dark:bg-slate-950 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800/80">
