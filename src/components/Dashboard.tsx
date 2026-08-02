@@ -372,7 +372,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
             <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-rose-600 group-hover:translate-x-1 transition-all" />
           </div>
-          <h3 className="font-bold text-slate-900 dark:text-white font-display">Professora Sofia</h3>
+          <h3 className="font-bold text-slate-900 dark:text-white font-display">Professor Lalá</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Tutoria técnica 24h para cálculos de medicação, sondagem e legislação.
           </p>

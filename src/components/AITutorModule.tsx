@@ -25,7 +25,7 @@ export const AITutorModule: React.FC = () => {
       id: 'm-1',
       role: 'assistant',
       content:
-        'Olá! Eu sou a **Professora Sofia**, sua tutora dedicada de Enfermagem 24 horas por dia. 👩‍⚕️✨\n\nPosso te ajudar com:\n- 🧪 **Cálculos de medicação e gotejamento de soro** passo a passo\n- 📜 **Legislação e Resoluções do COFEN/COREN**\n- 💉 **Técnicas de punção, sondagem e sinais vitais**\n- 🎯 **Dicas estratégicas para passar em concursos**\n\nEm que posso te ajudar nos seus estudos hoje?',
+        'Olá! Eu sou o **Professor Lalá**, seu tutor dedicado de Enfermagem 24 horas por dia. 👨‍⚕️✨\n\nPosso te ajudar com:\n- 🧪 **Cálculos de medicação e gotejamento de soro** passo a passo\n- 📜 **Legislação e Resoluções do COFEN/COREN**\n- 💉 **Técnicas de punção, sondagem e sinais vitais**\n- 🎯 **Dicas estratégicas para passar em concursos**\n\nEm que posso te ajudar nos seus estudos hoje?',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -115,7 +115,7 @@ export const AITutorModule: React.FC = () => {
         <div>
           <h1 className="text-xl font-extrabold text-slate-800 dark:text-white flex items-center space-x-2 font-display">
             <Bot className="w-6 h-6 text-rose-600" />
-            <span>Tutor IA 24/7 - Professora Sofia</span>
+            <span>Tutor IA 24/7 - Professor Lalá</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Suporte técnico e pedagógico instantâneo 24 horas por dia para tirar dúvidas de Enfermagem.
@@ -187,7 +187,7 @@ export const AITutorModule: React.FC = () => {
               </div>
               <div className="p-4 rounded-2xl rounded-tl-none bg-rose-50/70 dark:bg-slate-900 border border-rose-100 dark:border-slate-700 text-slate-500 text-xs flex items-center space-x-2">
                 <Loader2 className="w-4 h-4 animate-spin text-rose-600" />
-                <span>Professora Sofia está digitando a resposta...</span>
+                <span>Professor Lalá está digitando a resposta...</span>
               </div>
             </div>
           )}

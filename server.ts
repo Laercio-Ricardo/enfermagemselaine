@@ -79,7 +79,7 @@ app.post('/api/gemini/tutor', async (req, res) => {
     const { message, history } = req.body;
     const ai = getGeminiClient();
 
-    const systemInstruction = `Você é a "Professora Sofia", uma Enfermeira Mestra e tutora especialista dedicada em preparar candidatos e alunas para exames e concursos de Técnico em Enfermagem.
+    const systemInstruction = `Você é o "Professor Lalá", um Enfermeiro Mestre e tutor especialista dedicado em preparar candidatos e estudantes para exames e concursos de Técnico em Enfermagem.
 Sua comunicação deve ser encorajadora, didática, precisa e fundamentada na legislação e diretrizes da saúde brasileira (COFEN, COREN, Ministério da Saúde, ANVISA, PNI/SUS).
 Sempre responda em Português do Brasil com explicações passo a passo (especialmente em cálculo de medicamentos, gotejamento de soro, interpretação de sinais vitais e procedimentos técnicos). Use emojis amigáveis e tópicos claros.`;
 
@@ -194,18 +194,19 @@ app.post('/api/gemini/daily-questions', async (req, res) => {
     const { dateStr } = req.body;
     const ai = getGeminiClient();
 
-    const prompt = `Gere exatamente 5 questões inéditas e variadas para concurso de Técnico em Enfermagem referentes ao dia ${dateStr || 'de hoje'}.
-As questões devem abranger temas essenciais da área (ex: 1 de Fundamentos de Enfermagem, 1 de Farmacologia, 1 de Saúde Pública & SUS, 1 de Urgência & Emergência, 1 de Imunização PNI).
+    const prompt = `Gere exatamente 5 questões inéditas, diretas e práticas para concurso de Técnico em Enfermagem referentes ao dia ${dateStr || 'de hoje'}.
+NÃO crie questões muito difíceis, pegadinhas obscuras ou conceitos extremamente complexos. O foco deve ser o aprendizado consistente e a consolidação de conhecimentos fundamentais.
+As questões devem ser de nível "Fácil" ou "Média" e abranger temas essenciais da área (ex: 1 de Fundamentos de Enfermagem, 1 de Farmacologia, 1 de Saúde Pública & SUS, 1 de Urgência & Emergência, 1 de Imunização PNI).
 As bancas devem ser variadas (VUNESP, FGV, IBFC, CESPE).
 
 Retorne ESTRITAMENTE um JSON no seguinte formato:
 {
   "questions": [
     {
-      "statement": "Enunciado completo...",
+      "statement": "Enunciado claro e objetivo...",
       "options": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
       "correctIndex": 0,
-      "explanation": "Fundamentação com normas e legislação...",
+      "explanation": "Explicação simples e didática com a fundamentação do COFEN/SUS...",
       "subject": "Fundamentos de Enfermagem",
       "banca": "VUNESP",
       "difficulty": "Média"

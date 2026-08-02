@@ -163,12 +163,12 @@ export const QuestionsModule: React.FC<QuestionsModuleProps> = ({
             {isUpdatingDaily ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-rose-600" />
-                <span>Buscando Lote Diário...</span>
+                <span>Baixando Lote de Questões...</span>
               </>
             ) : (
               <>
                 <RefreshCw className="w-3.5 h-3.5 text-rose-600" />
-                <span>Atualizar Banco Agora</span>
+                <span>Baixar questões e atualizar</span>
               </>
             )}
           </button>
