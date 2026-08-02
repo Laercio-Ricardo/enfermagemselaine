@@ -1,0 +1,6 @@
+{
+  "name": "Enfermagem Pro - Estudos para Concursos",
+  "description": "Plataforma completa de estudos para Técnica em Enfermagem com questões de concursos, flashcards SM-2, cronograma semanal, integração com Google Calendar, modo offline, tutor IA 24/7 e relatórios de desempenho.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

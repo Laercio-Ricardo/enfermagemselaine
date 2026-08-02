@@ -1,0 +1,19 @@
+{
+  "short_name": "EnfermagemPro",
+  "name": "Enfermagem Pro - Estudos & Concursos",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230f766e'/><path d='M50 20v60M20 50h60' stroke='white' stroke-width='12' stroke-linecap='round'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "description": "Plataforma de estudos com questões, flashcards e tutor IA para Técnica em Enfermagem e Concursos."
+}
