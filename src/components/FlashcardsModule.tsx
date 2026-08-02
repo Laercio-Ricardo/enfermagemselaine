@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { generateFlashcardsAI } from '../services/geminiService';
 import {
   Layers,
   RotateCw,
@@ -64,14 +65,9 @@ export const FlashcardsModule: React.FC<FlashcardsModuleProps> = ({
   const handleGenerateAiFlashcards = async () => {
     setIsGenerating(true);
     try {
-      const res = await fetch('/api/gemini/flashcards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic: topicInput, amount: amountInput }),
-      });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.flashcards)) {
-        const created: Flashcard[] = data.flashcards.map((fc: any, i: number) => ({
+      const cardsData = await generateFlashcardsAI(topicInput, amountInput);
+      if (Array.isArray(cardsData) && cardsData.length > 0) {
+        const created: Flashcard[] = cardsData.map((fc: any, i: number) => ({
           id: `fc-ai-${Date.now()}-${i}`,
           front: fc.front,
           back: fc.back,

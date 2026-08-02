@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { generateReportAI } from '../services/geminiService';
 import {
   FileText,
   Sparkles,
@@ -33,36 +34,23 @@ export const ReportsModule: React.FC<ReportsModuleProps> = ({
     setIsGenerating(true);
     try {
       const weakTopics = ['Saúde da Mulher (Regra de Nägele)', 'Farmacologia (Diluições)'];
+      const statsObj = {
+        totalQuestions,
+        accuracy,
+        minutesStudied: 270,
+        flashcardsReviewed: state.flashcards.length,
+      };
 
-      const res = await fetch('/api/gemini/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          stats: {
-            totalQuestions,
-            accuracy,
-            minutesStudied: 270,
-            flashcardsReviewed: state.flashcards.length,
-          },
-          weakTopics,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success && data.data) {
+      const repData = await generateReportAI(statsObj, weakTopics);
+      if (repData && (repData.diagnostic || repData.tips)) {
         const newReport: WeeklyReportData = {
           id: `rep-${Date.now()}`,
           generatedAt: new Date().toISOString(),
-          statsSummary: {
-            totalQuestions,
-            accuracy,
-            minutesStudied: 270,
-            flashcardsReviewed: state.flashcards.length,
-          },
-          diagnostic: data.data.diagnostic || 'Ótimo progresso na semana!',
-          prioritySubjects: data.data.prioritySubjects || weakTopics,
-          tips: data.data.tips || ['Revise os pontos fracos diariamente.'],
-          recommendedScheduleFocus: data.data.recommendedScheduleFocus || 'Mantenha 30 minutos diários de questões.',
+          statsSummary: statsObj,
+          diagnostic: repData.diagnostic || 'Ótimo progresso na semana!',
+          prioritySubjects: repData.prioritySubjects || weakTopics,
+          tips: repData.tips || ['Revise os pontos fracos diariamente.'],
+          recommendedScheduleFocus: repData.recommendedScheduleFocus || 'Mantenha 30 minutos diários de questões.',
         };
         onAddNewReport(newReport);
       } else {

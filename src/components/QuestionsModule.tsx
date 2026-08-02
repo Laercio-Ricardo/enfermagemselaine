@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { generateQuestionAI } from '../services/geminiService';
 import {
   BookOpen,
   CheckCircle2,
@@ -89,25 +90,16 @@ export const QuestionsModule: React.FC<QuestionsModuleProps> = ({
   const handleGenerateAiQuestion = async () => {
     setIsGeneratingAi(true);
     try {
-      const res = await fetch('/api/gemini/question', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          subject: aiSubjectInput,
-          banca: aiBancaInput,
-          difficulty: 'Média',
-        }),
-      });
-      const data = await res.json();
-      if (data.success && data.data) {
+      const qData = await generateQuestionAI(aiSubjectInput, aiBancaInput, 'Média');
+      if (qData && qData.statement) {
         const newQ: Question = {
           id: `q-ai-${Date.now()}`,
-          statement: data.data.statement,
-          options: data.data.options,
-          correctIndex: data.data.correctIndex,
-          explanation: data.data.explanation,
-          subject: data.data.subject || aiSubjectInput,
-          banca: data.data.banca || aiBancaInput,
+          statement: qData.statement,
+          options: qData.options || [],
+          correctIndex: qData.correctIndex ?? 0,
+          explanation: qData.explanation || '',
+          subject: qData.subject || aiSubjectInput,
+          banca: qData.banca || aiBancaInput,
           difficulty: 'Média',
           isAiGenerated: true,
         };

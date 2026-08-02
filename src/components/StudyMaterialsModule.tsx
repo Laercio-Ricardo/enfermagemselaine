@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { generateStudySummaryAI } from '../services/geminiService';
 import {
   BookOpen,
   Search,
@@ -66,27 +67,20 @@ export const StudyMaterialsModule: React.FC<StudyMaterialsModuleProps> = ({
     setGenError('');
 
     try {
-      const res = await fetch('/api/gemini/generate-summary', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          topic: customTopicInput,
-          subject: selectedSubject !== 'Todas' ? selectedSubject : 'Fundamentos de Enfermagem',
-        }),
-      });
+      const subjectParam = selectedSubject !== 'Todas' ? selectedSubject : 'Fundamentos de Enfermagem';
+      const articleData = await generateStudySummaryAI(customTopicInput, subjectParam);
 
-      const data = await res.json();
-      if (data.success && data.article) {
+      if (articleData && (articleData.title || articleData.contentMarkdown)) {
         const newArt: StudyArticle = {
           id: `art-ai-${Date.now()}`,
-          title: data.article.title || customTopicInput,
-          subject: (data.article.subject as SubjectCategory) || 'Fundamentos de Enfermagem',
-          summary: data.article.summary || 'Resumo gerado por IA especialista em enfermagem.',
-          keyPoints: data.article.keyPoints || [],
-          cofenNorm: data.article.cofenNorm,
-          mnemonic: data.article.mnemonic,
-          readTimeMinutes: data.article.readTimeMinutes || 5,
-          contentMarkdown: data.article.contentMarkdown || '# Conteúdo indisponível',
+          title: articleData.title || customTopicInput,
+          subject: (articleData.subject as SubjectCategory) || 'Fundamentos de Enfermagem',
+          summary: articleData.summary || 'Resumo gerado por IA especialista em enfermagem.',
+          keyPoints: articleData.keyPoints || [],
+          cofenNorm: articleData.cofenNorm,
+          mnemonic: articleData.mnemonic,
+          readTimeMinutes: articleData.readTimeMinutes || 5,
+          contentMarkdown: articleData.contentMarkdown || '# Conteúdo indisponível',
           isAiGenerated: true,
         };
 
@@ -94,7 +88,7 @@ export const StudyMaterialsModule: React.FC<StudyMaterialsModuleProps> = ({
         setSelectedArticle(newArt);
         setCustomTopicInput('');
       } else {
-        setGenError(data.error || 'Erro ao gerar o resumo.');
+        setGenError('Erro ao gerar o resumo.');
       }
     } catch (err: any) {
       setGenError('Falha de conexão ao gerar o resumo.');

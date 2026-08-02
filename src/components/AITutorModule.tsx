@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { askTutorAI } from '../services/geminiService';
 import {
   Bot,
   Send,
@@ -62,27 +63,14 @@ export const AITutorModule: React.FC = () => {
         content: m.content,
       }));
 
-      const res = await fetch('/api/gemini/tutor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: query,
-          history: historyPayload,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success && data.reply) {
-        const assistantMsg: ChatMessage = {
-          id: `a-${Date.now()}`,
-          role: 'assistant',
-          content: data.reply,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        };
-        setMessages((prev) => [...prev, assistantMsg]);
-      } else {
-        throw new Error(data.error || 'Erro no Tutor');
-      }
+      const reply = await askTutorAI(query, historyPayload);
+      const assistantMsg: ChatMessage = {
+        id: `a-${Date.now()}`,
+        role: 'assistant',
+        content: reply,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, assistantMsg]);
     } catch (err: any) {
       console.error(err);
       setMessages((prev) => [

@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { generateDailyQuestionsAI } from './services/geminiService';
 import { Navbar } from './components/Navbar';
 import { Dashboard } from './components/Dashboard';
 import { QuestionsModule } from './components/QuestionsModule';
@@ -64,19 +65,14 @@ export default function App() {
     const todayStr = new Date().toISOString().split('T')[0];
     setIsUpdatingDaily(true);
     try {
-      const res = await fetch('/api/gemini/daily-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dateStr: todayStr }),
-      });
-      const data = await res.json();
-      if (data.success && Array.isArray(data.questions) && data.questions.length > 0) {
-        const newDailyQs: Question[] = data.questions.map((q: any, i: number) => ({
+      const questionsData = await generateDailyQuestionsAI(todayStr);
+      if (Array.isArray(questionsData) && questionsData.length > 0) {
+        const newDailyQs: Question[] = questionsData.map((q: any, i: number) => ({
           id: `q-daily-${Date.now()}-${i}`,
           statement: q.statement,
-          options: q.options,
-          correctIndex: q.correctIndex,
-          explanation: q.explanation,
+          options: q.options || [],
+          correctIndex: q.correctIndex ?? 0,
+          explanation: q.explanation || '',
           subject: q.subject || 'Fundamentos de Enfermagem',
           banca: q.banca || 'VUNESP',
           difficulty: q.difficulty || 'Média',
