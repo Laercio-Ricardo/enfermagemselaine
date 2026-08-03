@@ -1,19 +1,55 @@
 {
-  "short_name": "EnfermagemPro",
+  "id": "com.laercio.enfermagempro",
   "name": "Enfermagem Pro - Estudos & Concursos",
-  "icons": [
-    {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%230f766e'/><path d='M50 20v60M20 50h60' stroke='white' stroke-width='12' stroke-linecap='round'/></svg>",
-      "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ],
+  "short_name": "EnfermagemPro",
+  "description": "Plataforma de estudos completa com questões, flashcards, calculadora de doses, anotações COFEN e tutor IA para Técnica em Enfermagem.",
   "start_url": "/",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "scope": "/",
-  "description": "Plataforma de estudos com questões, flashcards e tutor IA para Técnica em Enfermagem e Concursos."
+  "background_color": "#0f172a",
+  "theme_color": "#e11d48",
+  "categories": ["education", "medical"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Tela Inicial do Enfermagem Pro"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Painel Principal"
+    }
+  ]
 }
