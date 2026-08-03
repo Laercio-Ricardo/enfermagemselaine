@@ -31,14 +31,12 @@ interface DashboardProps {
   state: AppState;
   setActiveTab: (tab: string) => void;
   onResumeLastStudy: () => void;
-  onOpenAppInstallGuide: () => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
   state,
   setActiveTab,
   onResumeLastStudy,
-  onOpenAppInstallGuide,
 }) => {
   // Compute overall stats
   const totalQuestionsAnswered = state.questions.filter((q) => q.userAnswer !== undefined).length;
@@ -107,30 +105,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </button>
           </div>
         </div>
-      </div>
-
-      {/* App Installation Promo Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-rose-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
-        <div className="flex items-center space-x-3.5">
-          <div className="p-3 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 shrink-0">
-            <Smartphone className="w-6 h-6" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white font-display">
-              Instalar como Aplicativo no Celular (Android / iPhone)
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Transforme esta plataforma em um App nativo no seu smartphone sem precisar de lojas de aplicativos.
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={onOpenAppInstallGuide}
-          className="shrink-0 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition-all shadow-sm flex items-center space-x-2"
-        >
-          <Download className="w-4 h-4" />
-          <span>Ver Passo a Passo de Instalação</span>
-        </button>
       </div>
 
       {/* Clean Metrics Grid */}

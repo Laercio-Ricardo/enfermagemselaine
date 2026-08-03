@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 
 // Retrieve API key for client-side execution when running as a static SPA (e.g., Netlify)
 const getClientApiKey = (): string | undefined => {
-  return import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined);
+  return (import.meta as any).env?.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined);
 };
 
 const getDirectGeminiClient = () => {

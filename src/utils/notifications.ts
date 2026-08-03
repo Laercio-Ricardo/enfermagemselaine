@@ -23,7 +23,7 @@ export function sendLocalNotification(title: string, options?: NotificationOptio
       badge: '/favicon.ico',
       vibrate: [200, 100, 200],
       ...options,
-    });
+    } as any);
   }
 }
 

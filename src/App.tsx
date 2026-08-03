@@ -18,23 +18,13 @@ import { DosageCalculatorModule } from './components/DosageCalculatorModule';
 import { NursingNotesModule } from './components/NursingNotesModule';
 import { SyncBackupModal } from './components/SyncBackupModal';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
-import { AppInstallGuideModal } from './components/AppInstallGuideModal';
-import { WallpaperModal } from './components/WallpaperModal';
-import { ThemeSelectorModal } from './components/ThemeSelectorModal';
 import { SplashScreen } from './components/SplashScreen';
-import { AndroidExportModal } from './components/AndroidExportModal';
-import { ThemeColor } from './lib/theme';
 
 import { AppState, Question, Flashcard, ScheduleItem, WeeklyReportData, StudyArticle, SubjectCategory } from './types';
 import { INITIAL_APP_STATE } from './data/initialData';
 import { calculateSM2 } from './utils/sm2';
 
 const LOCAL_STORAGE_KEY = 'enfermagem_pro_app_state_v1';
-const DARK_MODE_KEY = 'enfermagem_pro_dark_mode';
-const WALLPAPER_KEY = 'enfermagem_pro_wallpaper';
-const WALLPAPER_OPACITY_KEY = 'enfermagem_pro_wallpaper_opacity';
-const WALLPAPER_BLUR_KEY = 'enfermagem_pro_wallpaper_blur';
-const THEME_COLOR_KEY = 'enfermagem_pro_theme_color';
 
 export default function App() {
   // Load initial state from LocalStorage or Fallback
@@ -50,13 +40,6 @@ export default function App() {
     return INITIAL_APP_STATE;
   });
 
-  // Dark mode state
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const savedDark = localStorage.getItem(DARK_MODE_KEY);
-    if (savedDark !== null) return savedDark === 'true';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
   // Navigation tab state
   const [activeTab, setActiveTab] = useState<string>('dashboard');
 
@@ -66,99 +49,7 @@ export default function App() {
   // Modals state
   const [isSyncOpen, setIsSyncOpen] = useState<boolean>(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
-  const [isAppInstallOpen, setIsAppInstallOpen] = useState<boolean>(false);
-  const [isWallpaperOpen, setIsWallpaperOpen] = useState<boolean>(false);
-  const [isThemeOpen, setIsThemeOpen] = useState<boolean>(false);
-  const [isAndroidExportOpen, setIsAndroidExportOpen] = useState<boolean>(false);
   const [showSplash, setShowSplash] = useState<boolean>(true);
-
-  // Theme color state
-  const [currentTheme, setCurrentThemeState] = useState<ThemeColor>(() => {
-    return (localStorage.getItem(THEME_COLOR_KEY) as ThemeColor) || 'rose';
-  });
-
-  const setThemeColor = (color: ThemeColor) => {
-    setCurrentThemeState(color);
-    localStorage.setItem(THEME_COLOR_KEY, color);
-  };
-
-  // Wallpaper state
-  const [wallpaper, setWallpaperState] = useState<string>(() => {
-    return localStorage.getItem(WALLPAPER_KEY) || '';
-  });
-  const [wallpaperOpacity, setWallpaperOpacityState] = useState<number>(() => {
-    const saved = localStorage.getItem(WALLPAPER_OPACITY_KEY);
-    return saved ? parseFloat(saved) : 0.35;
-  });
-  const [wallpaperBlur, setWallpaperBlurState] = useState<number>(() => {
-    const saved = localStorage.getItem(WALLPAPER_BLUR_KEY);
-    return saved ? parseInt(saved, 10) : 2;
-  });
-
-  const setWallpaper = (url: string) => {
-    setWallpaperState(url);
-    if (url) {
-      localStorage.setItem(WALLPAPER_KEY, url);
-    } else {
-      localStorage.removeItem(WALLPAPER_KEY);
-    }
-  };
-
-  const setWallpaperOpacity = (val: number) => {
-    setWallpaperOpacityState(val);
-    localStorage.setItem(WALLPAPER_OPACITY_KEY, val.toString());
-  };
-
-  const setWallpaperBlur = (val: number) => {
-    setWallpaperBlurState(val);
-    localStorage.setItem(WALLPAPER_BLUR_KEY, val.toString());
-  };
-
-  // PWA install prompt state
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isAppInstalled, setIsAppInstalled] = useState<boolean>(false);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-
-    const handleAppInstalled = () => {
-      setIsAppInstalled(true);
-      setDeferredPrompt(null);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsAppInstalled(true);
-    }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
-
-  const handleInstallAppClick = async () => {
-    if (deferredPrompt) {
-      try {
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        if (choice?.outcome === 'accepted') {
-          setIsAppInstalled(true);
-        }
-        setDeferredPrompt(null);
-      } catch (err) {
-        console.error('PWA install error:', err);
-        setIsAppInstallOpen(true);
-      }
-    } else {
-      setIsAppInstallOpen(true);
-    }
-  };
 
   // Daily auto update state
   const [isUpdatingDaily, setIsUpdatingDaily] = useState<boolean>(false);
@@ -216,18 +107,13 @@ export default function App() {
     }
   }, [appState]);
 
-  // Sync dark mode class on <html> and <meta name="theme-color">
+  // Ensure light theme and sync meta theme-color
   useEffect(() => {
+    document.documentElement.classList.remove('dark');
     const metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-      if (metaTheme) metaTheme.setAttribute('content', '#0f172a');
-    } else {
-      document.documentElement.classList.remove('dark');
-      if (metaTheme) metaTheme.setAttribute('content', '#e11d48');
-    }
-    localStorage.setItem(DARK_MODE_KEY, String(darkMode));
-  }, [darkMode]);
+    if (metaTheme) metaTheme.setAttribute('content', '#fff1f2');
+    localStorage.removeItem('enfermagem_pro_dark_mode');
+  }, []);
 
   // Network online/offline listeners
   useEffect(() => {
@@ -412,33 +298,16 @@ export default function App() {
   };
 
   return (
-    <div className={`relative min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col theme-${currentTheme}`}>
+    <div className="relative min-h-screen bg-rose-50/40 text-slate-900 font-sans transition-colors duration-200 flex flex-col">
       
-      {/* Background Custom Wallpaper layer */}
-      {wallpaper && (
-        <div
-          className="fixed inset-0 z-0 pointer-events-none transition-all duration-300 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url("${wallpaper}")`,
-            opacity: wallpaperOpacity,
-            filter: `blur(${wallpaperBlur}px)`,
-          }}
-        />
-      )}
-
       {/* Top Navigation Bar */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={handleTabChange}
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
         isOnline={isOnline}
         streakDays={7}
         onOpenSync={() => setIsSyncOpen(true)}
         onOpenNotifications={() => setIsNotificationsOpen(true)}
-        onOpenAppInstallGuide={handleInstallAppClick}
-        onOpenWallpaper={() => setIsWallpaperOpen(true)}
-        onOpenTheme={() => setIsThemeOpen(true)}
       />
 
       {/* Floating Daily Auto-Update Notification Banner */}
@@ -461,7 +330,6 @@ export default function App() {
             state={appState}
             setActiveTab={handleTabChange}
             onResumeLastStudy={handleResumeLastStudy}
-            onOpenAppInstallGuide={() => setIsAppInstallOpen(true)}
           />
         )}
 
@@ -513,17 +381,17 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-600 dark:text-slate-300">
+      <footer className="border-t border-rose-100 bg-white py-6 text-center text-xs text-slate-700">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center space-y-2">
-          <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
-            ⚡ <strong className="font-extrabold text-slate-900 dark:text-white">Enfermagem Pro</strong> - Plataforma Especializada para Técnica em Enfermagem & Concursos.
+          <p className="text-xs sm:text-sm font-semibold text-slate-800">
+            ⚡ <strong className="font-extrabold text-slate-900">Enfermagem Pro</strong> - Plataforma Especializada para Técnica em Enfermagem & Concursos.
           </p>
-          <p className="text-xs text-slate-600 dark:text-slate-300 flex flex-wrap items-center justify-center gap-1.5">
-            <span>Criado com carinho por <strong className="font-extrabold text-slate-900 dark:text-white">Laércio Ricardo</strong></span>
+          <p className="text-xs text-slate-600 flex flex-wrap items-center justify-center gap-1.5">
+            <span>Criado com carinho por <strong className="font-extrabold text-slate-900">Laércio Ricardo</strong></span>
             <span>•</span>
-            <span className="inline-flex items-center space-x-1 text-rose-600 dark:text-rose-400 font-bold">
+            <span className="inline-flex items-center space-x-1 text-rose-600 font-bold">
               <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500 inline" />
-              <span>Oferecido especialmente para <strong className="font-extrabold text-rose-600 dark:text-rose-400">Gisselaine</strong></span>
+              <span>Oferecido especialmente para <strong className="font-extrabold text-rose-600">Gisselaine</strong></span>
             </span>
           </p>
         </div>
@@ -531,12 +399,6 @@ export default function App() {
 
       {/* Modals */}
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
-
-      <AndroidExportModal
-        isOpen={isAndroidExportOpen}
-        onClose={() => setIsAndroidExportOpen(false)}
-        onPreviewSplash={() => setShowSplash(true)}
-      />
 
       <SyncBackupModal
         isOpen={isSyncOpen}
@@ -562,32 +424,6 @@ export default function App() {
             notificationSettings: newSettings,
           }))
         }
-      />
-
-      <AppInstallGuideModal
-        isOpen={isAppInstallOpen}
-        onClose={() => setIsAppInstallOpen(false)}
-        deferredPrompt={deferredPrompt}
-        onInstallDirect={handleInstallAppClick}
-        isInstalled={isAppInstalled}
-      />
-
-      <WallpaperModal
-        isOpen={isWallpaperOpen}
-        onClose={() => setIsWallpaperOpen(false)}
-        wallpaper={wallpaper}
-        setWallpaper={setWallpaper}
-        wallpaperOpacity={wallpaperOpacity}
-        setWallpaperOpacity={setWallpaperOpacity}
-        wallpaperBlur={wallpaperBlur}
-        setWallpaperBlur={setWallpaperBlur}
-      />
-
-      <ThemeSelectorModal
-        isOpen={isThemeOpen}
-        onClose={() => setIsThemeOpen(false)}
-        currentTheme={currentTheme}
-        setTheme={setThemeColor}
       />
 
     </div>

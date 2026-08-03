@@ -24,29 +24,19 @@ import {
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  darkMode: boolean;
-  setDarkMode: (val: boolean | ((prev: boolean) => boolean)) => void;
   isOnline: boolean;
   streakDays: number;
   onOpenSync: () => void;
   onOpenNotifications: () => void;
-  onOpenAppInstallGuide: () => void;
-  onOpenWallpaper?: () => void;
-  onOpenTheme?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
-  darkMode,
-  setDarkMode,
   isOnline,
   streakDays,
   onOpenSync,
   onOpenNotifications,
-  onOpenAppInstallGuide,
-  onOpenWallpaper,
-  onOpenTheme,
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Painel', icon: BarChart3 },
@@ -61,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-rose-100 dark:border-slate-800 text-slate-900 dark:text-white transition-colors duration-200 shadow-2xs">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-rose-100 text-slate-900 shadow-2xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -72,10 +62,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
+                <span className="text-base font-extrabold tracking-tight text-slate-900 font-display">
                   Enfermagem Pro
                 </span>
-                <span className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                <span className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
                   Técnica & Concursos
                 </span>
               </div>
@@ -94,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className={`flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                     isActive
                       ? 'bg-rose-600 text-white shadow-2xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-rose-50'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -107,19 +97,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Actions & Settings */}
           <div className="flex items-center space-x-2 sm:space-x-2.5">
             
-            {/* Install App Button */}
-            <button
-              onClick={onOpenAppInstallGuide}
-              className="bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 font-bold text-xs py-1.5 px-3 rounded-xl transition-all flex items-center space-x-1.5 shadow-2xs"
-              title="Como baixar/instalar como aplicativo no celular"
-            >
-              <Smartphone className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
-              <span className="hidden sm:inline">Baixar App</span>
-            </button>
-
             {/* Streak Counter */}
             <div
-              className="flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/60 text-xs font-bold"
+              className="flex items-center space-x-1 px-2.5 py-1 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-bold"
               title="Dias consecutivos de estudo"
             >
               <Flame className="w-3.5 h-3.5 text-red-500 fill-red-500" />
@@ -130,13 +110,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div
               className={`flex items-center space-x-1 text-[11px] font-semibold px-2 py-1 rounded-xl border ${
                 isOnline
-                  ? 'bg-rose-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-rose-200 dark:border-slate-700'
-                  : 'bg-red-100 dark:bg-red-950/80 text-red-800 dark:text-red-300 border-red-300'
+                  ? 'bg-rose-50 text-slate-700 border-rose-200'
+                  : 'bg-red-100 text-red-800 border-red-300'
               }`}
               title={isOnline ? 'Sincronizado na nuvem' : 'Modo Offline - Estude sem internet'}
             >
               {isOnline ? (
-                <Wifi className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+                <Wifi className="w-3.5 h-3.5 text-rose-600" />
               ) : (
                 <WifiOff className="w-3.5 h-3.5 text-red-600" />
               )}
@@ -145,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Notifications Button */}
             <button
               onClick={onOpenNotifications}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-rose-50 transition-colors"
               title="Lembretes de estudo"
             >
               <Bell className="w-4 h-4" />
@@ -154,47 +134,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Cloud Sync Button */}
             <button
               onClick={onOpenSync}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-rose-50 transition-colors"
               title="Sincronização entre dispositivos"
             >
-              <CloudCheck className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-            </button>
-
-            {/* Theme Selector Button */}
-            {onOpenTheme && (
-              <button
-                onClick={onOpenTheme}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
-                title="Personalizar Cores do App"
-              >
-                <Palette className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-              </button>
-            )}
-
-            {/* Wallpaper Button */}
-            {onOpenWallpaper && (
-              <button
-                onClick={onOpenWallpaper}
-                className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
-                title="Papel de Parede do App (Foto Personalizada)"
-              >
-                <ImageIcon className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-              </button>
-            )}
-
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={() => setDarkMode((prev) => !prev)}
-              className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
-              title={darkMode ? 'Modo Claro' : 'Modo Noturno'}
-            >
-              {darkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-slate-600" />}
+              <CloudCheck className="w-4 h-4 text-rose-600" />
             </button>
           </div>
         </div>
 
         {/* Mobile Bottom Navigation Bar */}
-        <div className="md:hidden border-t border-rose-100 dark:border-slate-800 py-1.5 flex justify-around overflow-x-auto">
+        <div className="md:hidden border-t border-rose-100 py-1.5 flex justify-around overflow-x-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -204,8 +153,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setActiveTab(item.id)}
                 className={`flex flex-col items-center py-1 px-2 text-xs font-bold transition-all shrink-0 ${
                   isActive
-                    ? 'text-rose-600 dark:text-rose-400 font-extrabold'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                    ? 'text-rose-600 font-extrabold'
+                    : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 <Icon className="w-4 h-4 mb-0.5" />
