@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Heart } from 'lucide-react';
 import { generateDailyQuestionsAI } from './services/geminiService';
 import { Navbar } from './components/Navbar';
 import { Dashboard } from './components/Dashboard';
@@ -13,10 +14,16 @@ import { ScheduleModule } from './components/ScheduleModule';
 import { AITutorModule } from './components/AITutorModule';
 import { ReportsModule } from './components/ReportsModule';
 import { StudyMaterialsModule } from './components/StudyMaterialsModule';
+import { DosageCalculatorModule } from './components/DosageCalculatorModule';
+import { NursingNotesModule } from './components/NursingNotesModule';
 import { SyncBackupModal } from './components/SyncBackupModal';
 import { NotificationSettingsModal } from './components/NotificationSettingsModal';
 import { AppInstallGuideModal } from './components/AppInstallGuideModal';
 import { WallpaperModal } from './components/WallpaperModal';
+import { ThemeSelectorModal } from './components/ThemeSelectorModal';
+import { SplashScreen } from './components/SplashScreen';
+import { AndroidExportModal } from './components/AndroidExportModal';
+import { ThemeColor } from './lib/theme';
 
 import { AppState, Question, Flashcard, ScheduleItem, WeeklyReportData, StudyArticle, SubjectCategory } from './types';
 import { INITIAL_APP_STATE } from './data/initialData';
@@ -27,6 +34,7 @@ const DARK_MODE_KEY = 'enfermagem_pro_dark_mode';
 const WALLPAPER_KEY = 'enfermagem_pro_wallpaper';
 const WALLPAPER_OPACITY_KEY = 'enfermagem_pro_wallpaper_opacity';
 const WALLPAPER_BLUR_KEY = 'enfermagem_pro_wallpaper_blur';
+const THEME_COLOR_KEY = 'enfermagem_pro_theme_color';
 
 export default function App() {
   // Load initial state from LocalStorage or Fallback
@@ -60,6 +68,19 @@ export default function App() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState<boolean>(false);
   const [isAppInstallOpen, setIsAppInstallOpen] = useState<boolean>(false);
   const [isWallpaperOpen, setIsWallpaperOpen] = useState<boolean>(false);
+  const [isThemeOpen, setIsThemeOpen] = useState<boolean>(false);
+  const [isAndroidExportOpen, setIsAndroidExportOpen] = useState<boolean>(false);
+  const [showSplash, setShowSplash] = useState<boolean>(true);
+
+  // Theme color state
+  const [currentTheme, setCurrentThemeState] = useState<ThemeColor>(() => {
+    return (localStorage.getItem(THEME_COLOR_KEY) as ThemeColor) || 'rose';
+  });
+
+  const setThemeColor = (color: ThemeColor) => {
+    setCurrentThemeState(color);
+    localStorage.setItem(THEME_COLOR_KEY, color);
+  };
 
   // Wallpaper state
   const [wallpaper, setWallpaperState] = useState<string>(() => {
@@ -388,7 +409,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-rose-50/20 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col">
+    <div className={`relative min-h-screen bg-rose-50/20 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col theme-${currentTheme}`}>
       
       {/* Background Custom Wallpaper layer */}
       {wallpaper && (
@@ -414,6 +435,7 @@ export default function App() {
         onOpenNotifications={() => setIsNotificationsOpen(true)}
         onOpenAppInstallGuide={handleInstallAppClick}
         onOpenWallpaper={() => setIsWallpaperOpen(true)}
+        onOpenTheme={() => setIsThemeOpen(true)}
       />
 
       {/* Floating Daily Auto-Update Notification Banner */}
@@ -439,6 +461,10 @@ export default function App() {
             onOpenAppInstallGuide={() => setIsAppInstallOpen(true)}
           />
         )}
+
+        {activeTab === 'calculator' && <DosageCalculatorModule />}
+
+        {activeTab === 'nursing-notes' && <NursingNotesModule />}
 
         {activeTab === 'studies' && (
           <StudyMaterialsModule
@@ -485,14 +511,37 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>
-            ⚡ <strong className="font-bold text-slate-700 dark:text-slate-300">Enfermagem Pro</strong> - Plataforma Especializada para Técnica em Enfermagem & Concursos.
-          </p>
-          <div className="flex items-center space-x-3 text-[11px]">
-            <span>Acesso Offline Garantido</span>
+        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="space-y-1 text-center md:text-left">
+            <p>
+              ⚡ <strong className="font-bold text-slate-700 dark:text-slate-300">Enfermagem Pro</strong> - Plataforma Especializada para Técnica em Enfermagem & Concursos.
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-center md:justify-start gap-1.5">
+              <span>Criado com carinho por <strong className="font-extrabold text-slate-800 dark:text-slate-200">Laércio Ricardo</strong></span>
+              <span>•</span>
+              <span className="inline-flex items-center space-x-1 text-rose-600 dark:text-rose-400 font-semibold">
+                <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500 inline" />
+                <span>Oferecido especialmente para <strong className="font-extrabold text-rose-600 dark:text-rose-400">Gisselaine</strong></span>
+              </span>
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center space-x-3 text-[11px] shrink-0">
+            <button
+              onClick={() => setIsAndroidExportOpen(true)}
+              className="text-rose-600 dark:text-rose-400 font-bold hover:underline"
+            >
+              📲 Gerar APK Android
+            </button>
             <span>•</span>
-            <span>Sincronização Nuvem Ativa</span>
+            <button
+              onClick={() => setShowSplash(true)}
+              className="text-amber-600 dark:text-amber-400 font-bold hover:underline"
+            >
+              ✨ Ver Splash Screen
+            </button>
+            <span>•</span>
+            <span>Acesso Offline Garantido</span>
             <span>•</span>
             <span>Tutor IA 24h</span>
           </div>
@@ -500,6 +549,14 @@ export default function App() {
       </footer>
 
       {/* Modals */}
+      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+
+      <AndroidExportModal
+        isOpen={isAndroidExportOpen}
+        onClose={() => setIsAndroidExportOpen(false)}
+        onPreviewSplash={() => setShowSplash(true)}
+      />
+
       <SyncBackupModal
         isOpen={isSyncOpen}
         onClose={() => setIsSyncOpen(false)}
@@ -543,6 +600,13 @@ export default function App() {
         setWallpaperOpacity={setWallpaperOpacity}
         wallpaperBlur={wallpaperBlur}
         setWallpaperBlur={setWallpaperBlur}
+      />
+
+      <ThemeSelectorModal
+        isOpen={isThemeOpen}
+        onClose={() => setIsThemeOpen(false)}
+        currentTheme={currentTheme}
+        setTheme={setThemeColor}
       />
 
     </div>

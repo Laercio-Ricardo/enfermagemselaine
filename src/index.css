@@ -27,3 +27,48 @@
   scrollbar-width: none;
 }
 
+/* Dynamic Theme Color Overrides */
+.theme-teal .bg-rose-600 { background-color: #0d9488 !important; }
+.theme-teal .hover\:bg-rose-500:hover { background-color: #14b8a6 !important; }
+.theme-teal .hover\:bg-rose-600:hover { background-color: #0f766e !important; }
+.theme-teal .text-rose-600 { color: #0d9488 !important; }
+.theme-teal .text-rose-700 { color: #0f766e !important; }
+.theme-teal .border-rose-200 { border-color: #99f6e4 !important; }
+.theme-teal .border-rose-600 { border-color: #0d9488 !important; }
+.theme-teal .bg-rose-50 { background-color: #f0fdfa !important; }
+.theme-teal .from-rose-600 { --tw-gradient-from: #0d9488 var(--tw-gradient-from-position); --tw-gradient-to: rgb(13 148 136 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.theme-teal .to-rose-700 { --tw-gradient-to: #0f766e var(--tw-gradient-to-position); }
+
+.theme-indigo .bg-rose-600 { background-color: #4f46e5 !important; }
+.theme-indigo .hover\:bg-rose-500:hover { background-color: #6366f1 !important; }
+.theme-indigo .hover\:bg-rose-600:hover { background-color: #4338ca !important; }
+.theme-indigo .text-rose-600 { color: #4f46e5 !important; }
+.theme-indigo .text-rose-700 { color: #4338ca !important; }
+.theme-indigo .border-rose-200 { border-color: #c7d2fe !important; }
+.theme-indigo .border-rose-600 { border-color: #4f46e5 !important; }
+.theme-indigo .bg-rose-50 { background-color: #eef2ff !important; }
+.theme-indigo .from-rose-600 { --tw-gradient-from: #4f46e5 var(--tw-gradient-from-position); --tw-gradient-to: rgb(79 70 229 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.theme-indigo .to-rose-700 { --tw-gradient-to: #4338ca var(--tw-gradient-to-position); }
+
+.theme-purple .bg-rose-600 { background-color: #9333ea !important; }
+.theme-purple .hover\:bg-rose-500:hover { background-color: #a855f7 !important; }
+.theme-purple .hover\:bg-rose-600:hover { background-color: #7e22ce !important; }
+.theme-purple .text-rose-600 { color: #9333ea !important; }
+.theme-purple .text-rose-700 { color: #7e22ce !important; }
+.theme-purple .border-rose-200 { border-color: #e9d5ff !important; }
+.theme-purple .border-rose-600 { border-color: #9333ea !important; }
+.theme-purple .bg-rose-50 { background-color: #faf5ff !important; }
+.theme-purple .from-rose-600 { --tw-gradient-from: #9333ea var(--tw-gradient-from-position); --tw-gradient-to: rgb(147 51 234 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.theme-purple .to-rose-700 { --tw-gradient-to: #7e22ce var(--tw-gradient-to-position); }
+
+.theme-amber .bg-rose-600 { background-color: #d97706 !important; }
+.theme-amber .hover\:bg-rose-500:hover { background-color: #f59e0b !important; }
+.theme-amber .hover\:bg-rose-600:hover { background-color: #b45309 !important; }
+.theme-amber .text-rose-600 { color: #d97706 !important; }
+.theme-amber .text-rose-700 { color: #b45309 !important; }
+.theme-amber .border-rose-200 { border-color: #fde68a !important; }
+.theme-amber .border-rose-600 { border-color: #d97706 !important; }
+.theme-amber .bg-rose-50 { background-color: #fffbeb !important; }
+.theme-amber .from-rose-600 { --tw-gradient-from: #d97706 var(--tw-gradient-from-position); --tw-gradient-to: rgb(217 119 6 / 0) var(--tw-gradient-to-position); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+.theme-amber .to-rose-700 { --tw-gradient-to: #b45309 var(--tw-gradient-to-position); }
+

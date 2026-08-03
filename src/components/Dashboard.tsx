@@ -12,7 +12,9 @@ import {
   Zap,
   Smartphone,
   CheckCircle2,
-  Download
+  Download,
+  Calculator,
+  FileCheck2
 } from 'lucide-react';
 import { AppState } from '../types';
 import {
@@ -295,6 +297,44 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Clean Quick Access Navigation Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         
+        <div
+          onClick={() => setActiveTab('calculator')}
+          className="bg-white dark:bg-slate-900 hover:border-rose-400 dark:hover:border-rose-500 rounded-2xl p-5 border border-rose-100 dark:border-slate-800 shadow-2xs cursor-pointer transition-all hover:-translate-y-1 group"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+              <Calculator className="w-5 h-5" />
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-rose-600 group-hover:translate-x-1 transition-all" />
+          </div>
+          <div className="flex items-center space-x-2">
+            <h3 className="font-bold text-slate-900 dark:text-white font-display">Calculadora de Doses</h3>
+            <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Prático</span>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Gotejamento de soro, regra de três, penicilina cristalina, IMC e SSVV com fórmulas.
+          </p>
+        </div>
+
+        <div
+          onClick={() => setActiveTab('nursing-notes')}
+          className="bg-white dark:bg-slate-900 hover:border-rose-400 dark:hover:border-rose-500 rounded-2xl p-5 border border-rose-100 dark:border-slate-800 shadow-2xs cursor-pointer transition-all hover:-translate-y-1 group"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+              <FileCheck2 className="w-5 h-5" />
+            </div>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-rose-600 group-hover:translate-x-1 transition-all" />
+          </div>
+          <div className="flex items-center space-x-2">
+            <h3 className="font-bold text-slate-900 dark:text-white font-display">Anotações COFEN</h3>
+            <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Pro</span>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Gerador de relatórios e evolução de enfermagem com terminologia técnica e revisão por IA.
+          </p>
+        </div>
+
         <div
           onClick={() => setActiveTab('studies')}
           className="bg-white dark:bg-slate-900 hover:border-rose-400 dark:hover:border-rose-500 rounded-2xl p-5 border border-rose-100 dark:border-slate-800 shadow-2xs cursor-pointer transition-all hover:-translate-y-1 group"

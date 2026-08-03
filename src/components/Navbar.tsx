@@ -15,7 +15,10 @@ import {
   Bell,
   Smartphone,
   Library,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Calculator,
+  FileCheck2,
+  Palette
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -29,6 +32,7 @@ interface NavbarProps {
   onOpenNotifications: () => void;
   onOpenAppInstallGuide: () => void;
   onOpenWallpaper?: () => void;
+  onOpenTheme?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -42,9 +46,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenNotifications,
   onOpenAppInstallGuide,
   onOpenWallpaper,
+  onOpenTheme,
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Painel', icon: BarChart3 },
+    { id: 'calculator', label: 'Cálculos', icon: Calculator },
+    { id: 'nursing-notes', label: 'Anotações', icon: FileCheck2 },
     { id: 'studies', label: 'Apostilas', icon: Library },
     { id: 'questions', label: 'Questões', icon: BookOpen },
     { id: 'flashcards', label: 'Flashcards', icon: Layers },
@@ -152,6 +159,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <CloudCheck className="w-4 h-4 text-rose-600 dark:text-rose-400" />
             </button>
+
+            {/* Theme Selector Button */}
+            {onOpenTheme && (
+              <button
+                onClick={onOpenTheme}
+                className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-rose-50 dark:hover:bg-slate-800 transition-colors"
+                title="Personalizar Cores do App"
+              >
+                <Palette className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+              </button>
+            )}
 
             {/* Wallpaper Button */}
             {onOpenWallpaper && (
