@@ -10,7 +10,10 @@ import {
   Lightbulb,
   CheckCircle2,
   Loader2,
-  Calendar
+  Calendar,
+  Printer,
+  Download,
+  Share2
 } from 'lucide-react';
 import { AppState, WeeklyReportData } from '../types';
 
@@ -29,6 +32,10 @@ export const ReportsModule: React.FC<ReportsModuleProps> = ({
   const totalQuestions = state.questions.filter((q) => q.userAnswer !== undefined).length;
   const correctCount = state.questions.filter((q) => q.isCorrect).length;
   const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+  const handleExportPDF = () => {
+    window.print();
+  };
 
   const handleGenerateWeeklyReport = async () => {
     setIsGenerating(true);
@@ -98,14 +105,24 @@ export const ReportsModule: React.FC<ReportsModuleProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-700 pb-4">
             <div className="flex items-center space-x-2">
               <Award className="w-6 h-6 text-emerald-600" />
-              <h2 className="text-lg font-bold text-slate-800 dark:text-white">
-                Relatório Diagnóstico da Semana
-              </h2>
+              <div>
+                <h2 className="text-lg font-bold text-slate-800 dark:text-white">
+                  Relatório Diagnóstico de Desempenho
+                </h2>
+                <span className="text-xs text-slate-400 flex items-center space-x-1 mt-0.5">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>Gerado em: {new Date(latestReport.generatedAt).toLocaleDateString('pt-BR')}</span>
+                </span>
+              </div>
             </div>
-            <span className="text-xs text-slate-400 flex items-center space-x-1">
-              <Calendar className="w-3.5 h-3.5" />
-              <span>Gerado em: {new Date(latestReport.generatedAt).toLocaleDateString('pt-BR')}</span>
-            </span>
+
+            <button
+              onClick={handleExportPDF}
+              className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center space-x-2 self-start sm:self-auto"
+            >
+              <Printer className="w-4 h-4 text-emerald-400" />
+              <span>📄 Baixar / Imprimir Relatório PDF</span>
+            </button>
           </div>
 
           {/* Stats Bar */}

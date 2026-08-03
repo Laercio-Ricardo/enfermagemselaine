@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 export const DosageCalculatorModule: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'drip' | 'dilution' | 'penicillin' | 'vitals'>('drip');
+  const [activeTab, setActiveTab] = useState<'drip' | 'dilution' | 'penicillin' | 'vitals' | 'formulas'>('drip');
 
   // --- 1. Drip Rate State ---
   const [volume, setVolume] = useState<string>('500'); // mL
@@ -197,53 +197,65 @@ export const DosageCalculatorModule: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-white dark:bg-slate-900 p-2 rounded-2xl border border-rose-100 dark:border-slate-800 shadow-2xs">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 bg-white p-2 rounded-2xl border border-rose-100 shadow-2xs">
         <button
           onClick={() => setActiveTab('drip')}
-          className={`py-3 px-4 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-2 ${
+          className={`py-3 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 ${
             activeTab === 'drip'
               ? 'bg-rose-600 text-white shadow-md'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-rose-50'
           }`}
         >
           <Droplet className="w-4 h-4" />
-          <span>Gotejamento Soro</span>
+          <span>Gotejamento</span>
         </button>
 
         <button
           onClick={() => setActiveTab('dilution')}
-          className={`py-3 px-4 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-2 ${
+          className={`py-3 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 ${
             activeTab === 'dilution'
               ? 'bg-rose-600 text-white shadow-md'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-rose-50'
           }`}
         >
           <Pill className="w-4 h-4" />
-          <span>Regra de 3 (Rediluição)</span>
+          <span>Regra de 3</span>
         </button>
 
         <button
           onClick={() => setActiveTab('penicillin')}
-          className={`py-3 px-4 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-2 ${
+          className={`py-3 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 ${
             activeTab === 'penicillin'
               ? 'bg-rose-600 text-white shadow-md'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-rose-50'
           }`}
         >
           <BookOpen className="w-4 h-4" />
-          <span>Penicilina Cristalina</span>
+          <span>Penicilina</span>
         </button>
 
         <button
           onClick={() => setActiveTab('vitals')}
-          className={`py-3 px-4 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-2 ${
+          className={`py-3 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 ${
             activeTab === 'vitals'
               ? 'bg-rose-600 text-white shadow-md'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-rose-50'
           }`}
         >
           <Heart className="w-4 h-4" />
-          <span>IMC & Sinais Vitais</span>
+          <span>IMC & Vitais</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('formulas')}
+          className={`py-3 px-3 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center space-x-1.5 col-span-2 sm:col-span-1 ${
+            activeTab === 'formulas'
+              ? 'bg-rose-600 text-white shadow-md'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-rose-50'
+          }`}
+        >
+          <Sparkles className="w-4 h-4 text-amber-300" />
+          <span>Escalas & Fórmulas</span>
         </button>
       </div>
 
@@ -624,6 +636,135 @@ export const DosageCalculatorModule: React.FC = () => {
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 5: Formulas & Reference Scales */}
+      {activeTab === 'formulas' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Gotejamento & Conversões */}
+            <div className="bg-white rounded-3xl p-6 border border-rose-100 shadow-xl space-y-4">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-2">
+                <Droplet className="w-5 h-5 text-rose-600" />
+                <span>Resumo de Fórmulas de Gotejamento</span>
+              </h3>
+              
+              <div className="space-y-3 text-xs">
+                <div className="p-3 bg-rose-50 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">1. Em HORAS (Macrogotas/min):</p>
+                  <p className="text-slate-700 font-mono mt-1 font-bold">Gotas/min = Volume (mL) ÷ (3 × Tempo em horas)</p>
+                </div>
+
+                <div className="p-3 bg-rose-50 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">2. Em HORAS (Microgotas/min):</p>
+                  <p className="text-slate-700 font-mono mt-1 font-bold">Microgotas/min = Volume (mL) ÷ Tempo em horas</p>
+                </div>
+
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                  <p className="font-extrabold text-slate-800">3. Em MINUTOS:</p>
+                  <p className="text-slate-600 font-mono mt-1">Macrogotas = (Volume × 20) ÷ Tempo em min</p>
+                  <p className="text-slate-600 font-mono mt-0.5">Microgotas = (Volume × 60) ÷ Tempo em min</p>
+                </div>
+
+                <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 font-semibold">
+                  <p className="font-extrabold text-amber-950">💡 Equivalências de Ouro para Provas:</p>
+                  <p className="mt-1">1 mL = 20 macrogotas = 60 microgotas</p>
+                  <p>1 macrogota = 3 microgotas</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Penicilina Cristalina */}
+            <div className="bg-white rounded-3xl p-6 border border-rose-100 shadow-xl space-y-4">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-2">
+                <Pill className="w-5 h-5 text-rose-600" />
+                <span>Penicilina Cristalina (Soluto/Solvente)</span>
+              </h3>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-3 bg-rose-50 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">Frasco de 5.000.000 UI:</p>
+                  <p className="text-slate-700 mt-1">O pó (soluto) equivale a <strong>2 mL</strong>. Ao adicionar 8 mL de AD (solvente), obtém-se o volume total de <strong>10 mL</strong>.</p>
+                </div>
+
+                <div className="p-3 bg-rose-50 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">Frasco de 10.000.000 UI:</p>
+                  <p className="text-slate-700 mt-1">O pó (soluto) equivale a <strong>4 mL</strong>. Ao adicionar 6 mL de AD (solvente), obtém-se o volume total de <strong>10 mL</strong>.</p>
+                </div>
+
+                <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-200 text-emerald-900 font-semibold">
+                  <p className="font-extrabold text-emerald-950">✅ Regra Prática de Cálculo:</p>
+                  <p className="mt-1 font-mono text-[11px]">5.000.000 UI ------ 10 mL (Volume Final)</p>
+                  <p className="font-mono text-[11px]">Dose Prescrita ------ X mL</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Escala de Coma de Glasgow & Regra dos 9 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Glasgow */}
+            <div className="bg-white rounded-3xl p-6 border border-rose-100 shadow-xl space-y-3">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-2">
+                <Activity className="w-5 h-5 text-rose-600" />
+                <span>Escala de Coma de Glasgow (3 a 15)</span>
+              </h3>
+
+              <div className="space-y-2 text-xs text-slate-700">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <strong className="text-rose-700">Abertura Ocular (1-4):</strong> Espontânea (4), Ao comando (3), À dor (2), Ausente (1).
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <strong className="text-rose-700">Resposta Verbal (1-5):</strong> Orientado (5), Confuso (4), Palavras desconexas (3), Sons incompreensíveis (2), Ausente (1).
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <strong className="text-rose-700">Resposta Motora (1-6):</strong> Obedece comandos (6), Localiza dor (5), Flexão normal/retirada (4), Flexão anormal/decorticação (3), Extensão/descerebração (2), Ausente (1).
+                </div>
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 font-bold">
+                  <span>Reatividade Pupilar (-2 a 0): Ambas reagem (0), Uma reage (-1), Nenhuma reage (-2).</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Sinais Vitais Referência */}
+            <div className="bg-white rounded-3xl p-6 border border-rose-100 shadow-xl space-y-3">
+              <h3 className="text-base font-extrabold text-slate-900 flex items-center space-x-2">
+                <Heart className="w-5 h-5 text-rose-600" />
+                <span>Valores de Referência de SSVV (Adulto)</span>
+              </h3>
+
+              <div className="grid grid-cols-2 gap-2.5 text-xs">
+                <div className="p-3 bg-rose-50/70 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">Pressão Arterial (PA)</p>
+                  <p className="text-slate-700 font-bold mt-0.5">Ótima: &lt; 120 / 80 mmHg</p>
+                  <p className="text-slate-500 text-[10px]">Normotenso / Hipertenso</p>
+                </div>
+
+                <div className="p-3 bg-rose-50/70 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">Frequência Cardíaca (FC)</p>
+                  <p className="text-slate-700 font-bold mt-0.5">60 a 100 bpm (Normocardia)</p>
+                  <p className="text-slate-500 text-[10px]">Bradicardia &lt; 60 | Taquicardia &gt; 100</p>
+                </div>
+
+                <div className="p-3 bg-rose-50/70 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">Frequência Respiratória</p>
+                  <p className="text-slate-700 font-bold mt-0.5">12 a 20 irpm (Eupneico)</p>
+                  <p className="text-slate-500 text-[10px]">Bradipneico &lt; 12 | Taquipneico &gt; 20</p>
+                </div>
+
+                <div className="p-3 bg-rose-50/70 rounded-2xl border border-rose-200">
+                  <p className="font-extrabold text-rose-900">Temperatura (T)</p>
+                  <p className="text-slate-700 font-bold mt-0.5">36,1 ºC a 37,2 ºC (Afebril)</p>
+                  <p className="text-slate-500 text-[10px]">Subfebril 37,3-37,7 | Febril ≥ 37,8 ºC</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       )}
