@@ -27,12 +27,25 @@ import { calculateSM2 } from './utils/sm2';
 const LOCAL_STORAGE_KEY = 'enfermagem_pro_app_state_v1';
 
 export default function App() {
-  // Load initial state from LocalStorage or Fallback
+  // Load initial state from LocalStorage or Fallback safely
   const [appState, setAppState] = useState<AppState>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return {
+          ...INITIAL_APP_STATE,
+          ...parsed,
+          questions: Array.isArray(parsed.questions) && parsed.questions.length > 0 ? parsed.questions : INITIAL_APP_STATE.questions,
+          flashcards: Array.isArray(parsed.flashcards) && parsed.flashcards.length > 0 ? parsed.flashcards : INITIAL_APP_STATE.flashcards,
+          articles: Array.isArray(parsed.articles) && parsed.articles.length > 0 ? parsed.articles : INITIAL_APP_STATE.articles,
+          schedule: Array.isArray(parsed.schedule) && parsed.schedule.length > 0 ? parsed.schedule : INITIAL_APP_STATE.schedule,
+          weeklyReports: Array.isArray(parsed.weeklyReports) && parsed.weeklyReports.length > 0 ? parsed.weeklyReports : INITIAL_APP_STATE.weeklyReports,
+          activities: parsed.activities && typeof parsed.activities === 'object' ? parsed.activities : INITIAL_APP_STATE.activities,
+          notificationSettings: parsed.notificationSettings || INITIAL_APP_STATE.notificationSettings,
+          cloudSync: parsed.cloudSync || INITIAL_APP_STATE.cloudSync,
+          lastLocation: parsed.lastLocation || INITIAL_APP_STATE.lastLocation,
+        };
       }
     } catch (e) {
       console.error('Failed to load state from localStorage', e);
