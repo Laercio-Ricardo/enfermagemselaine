@@ -216,12 +216,15 @@ export default function App() {
     }
   }, [appState]);
 
-  // Sync dark mode class on <html>
+  // Sync dark mode class on <html> and <meta name="theme-color">
   useEffect(() => {
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      if (metaTheme) metaTheme.setAttribute('content', '#0f172a');
     } else {
       document.documentElement.classList.remove('dark');
+      if (metaTheme) metaTheme.setAttribute('content', '#e11d48');
     }
     localStorage.setItem(DARK_MODE_KEY, String(darkMode));
   }, [darkMode]);
@@ -409,7 +412,7 @@ export default function App() {
   };
 
   return (
-    <div className={`relative min-h-screen bg-rose-50/20 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col theme-${currentTheme}`}>
+    <div className={`relative min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-col theme-${currentTheme}`}>
       
       {/* Background Custom Wallpaper layer */}
       {wallpaper && (
@@ -510,15 +513,15 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
+      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-600 dark:text-slate-300">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center space-y-2">
-          <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-            ⚡ <strong className="font-extrabold">Enfermagem Pro</strong> - Plataforma Especializada para Técnica em Enfermagem & Concursos.
+          <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
+            ⚡ <strong className="font-extrabold text-slate-900 dark:text-white">Enfermagem Pro</strong> - Plataforma Especializada para Técnica em Enfermagem & Concursos.
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-center gap-1.5">
-            <span>Criado com carinho por <strong className="font-extrabold text-slate-800 dark:text-slate-200">Laércio Ricardo</strong></span>
+          <p className="text-xs text-slate-600 dark:text-slate-300 flex flex-wrap items-center justify-center gap-1.5">
+            <span>Criado com carinho por <strong className="font-extrabold text-slate-900 dark:text-white">Laércio Ricardo</strong></span>
             <span>•</span>
-            <span className="inline-flex items-center space-x-1 text-rose-600 dark:text-rose-400 font-semibold">
+            <span className="inline-flex items-center space-x-1 text-rose-600 dark:text-rose-400 font-bold">
               <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500 inline" />
               <span>Oferecido especialmente para <strong className="font-extrabold text-rose-600 dark:text-rose-400">Gisselaine</strong></span>
             </span>
