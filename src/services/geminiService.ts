@@ -1,5 +1,54 @@
 import { GoogleGenAI } from '@google/genai';
 
+// Helper to safely parse JSON from Gemini (handling markdown code fences)
+const cleanAndParseJson = (text: string) => {
+  if (!text) return {};
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  }
+  return JSON.parse(cleaned.trim());
+};
+
+// Helper to sanitize and format conversation history for Gemini multi-turn chat
+const formatChatHistory = (history: any[], newMessage: string) => {
+  const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
+
+  if (Array.isArray(history)) {
+    for (const msg of history) {
+      if (!msg || !msg.content || typeof msg.content !== 'string') continue;
+      const role = msg.role === 'user' ? 'user' : 'model';
+
+      // Gemini requires history to start with a 'user' turn
+      if (contents.length === 0 && role === 'model') {
+        continue;
+      }
+
+      // Merge consecutive messages from the same role
+      if (contents.length > 0 && contents[contents.length - 1].role === role) {
+        contents[contents.length - 1].parts[0].text += `\n\n${msg.content}`;
+      } else {
+        contents.push({
+          role,
+          parts: [{ text: msg.content }],
+        });
+      }
+    }
+  }
+
+  // Ensure the new message is appended as a 'user' turn
+  if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+    contents[contents.length - 1].parts[0].text += `\n\n${newMessage}`;
+  } else {
+    contents.push({
+      role: 'user',
+      parts: [{ text: newMessage }],
+    });
+  }
+
+  return contents;
+};
+
 // Retrieve API key for client-side execution when running as a static SPA (e.g., Netlify)
 const getClientApiKey = (): string | undefined => {
   return (import.meta as any).env?.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : undefined);
@@ -26,9 +75,15 @@ export async function askTutorAI(message: string, history: any[], userName?: str
     if (res.ok) {
       const data = await res.json();
       if (data.success && data.reply) return data.reply;
+      if (data.error) throw new Error(data.error);
+    } else {
+      const errorJson = await res.json().catch(() => ({}));
+      if (errorJson.error) {
+        console.warn('Server API returned error:', errorJson.error);
+      }
     }
   } catch (err) {
-    console.warn('Server API unavailable, falling back to direct client-side Gemini call:', err);
+    console.warn('Server API error, checking client fallback:', err);
   }
 
   // Fallback: Direct Client-Side call for Netlify / Static hosting
@@ -39,16 +94,7 @@ export async function askTutorAI(message: string, history: any[], userName?: str
 Sua comunicação deve ser encorajadora, didática, precisa e fundamentada na legislação e diretrizes da saúde brasileira (COFEN, COREN, Ministério da Saúde, ANVISA, PNI/SUS).
 Sempre responda em Português do Brasil com explicações passo a passo (especialmente em cálculo de medicamentos, gotejamento de soro, interpretação de sinais vitais e procedimentos técnicos). Use emojis amigáveis e tópicos claros.`;
 
-  const chatContents: any[] = [];
-  if (Array.isArray(history)) {
-    for (const msg of history) {
-      chatContents.push({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }],
-      });
-    }
-  }
-  chatContents.push({ role: 'user', parts: [{ text: message }] });
+  const chatContents = formatChatHistory(history, message);
 
   const response = await ai.models.generateContent({
     model: 'gemini-3.6-flash',
@@ -101,7 +147,7 @@ Retorne ESTRITAMENTE um JSON no seguinte formato (sem marcações markdown envol
     config: { responseMimeType: 'application/json', temperature: 0.7 },
   });
 
-  return JSON.parse(response.text || '{}');
+  return cleanAndParseJson(response.text || '{}');
 }
 
 // 3. Batch Daily Questions
@@ -147,7 +193,7 @@ Retorne ESTRITAMENTE um JSON no seguinte formato:
     config: { responseMimeType: 'application/json', temperature: 0.8 },
   });
 
-  const parsed = JSON.parse(response.text || '{}');
+  const parsed = cleanAndParseJson(response.text || '{}');
   return parsed.questions || [];
 }
 
@@ -186,7 +232,7 @@ Retorne um JSON no formato:
     config: { responseMimeType: 'application/json' },
   });
 
-  const parsed = JSON.parse(response.text || '{}');
+  const parsed = cleanAndParseJson(response.text || '{}');
   return parsed.flashcards || [];
 }
 
@@ -232,7 +278,7 @@ Forneça um relatório semanal detalhado, motivador e estratégico em formato JS
     config: { responseMimeType: 'application/json' },
   });
 
-  return JSON.parse(response.text || '{}');
+  return cleanAndParseJson(response.text || '{}');
 }
 
 // 6. Generate Study Summary
@@ -274,5 +320,5 @@ Forneça um JSON com a seguinte estrutura estrita:
     config: { responseMimeType: 'application/json', temperature: 0.7 },
   });
 
-  return JSON.parse(response.text || '{}');
+  return cleanAndParseJson(response.text || '{}');
 }

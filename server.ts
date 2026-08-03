@@ -11,6 +11,55 @@ const PORT = 3000;
 
 app.use(express.json());
 
+// Helper to safely parse JSON from Gemini (handling markdown code fences)
+const cleanAndParseJson = (text: string) => {
+  if (!text) return {};
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```')) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  }
+  return JSON.parse(cleaned.trim());
+};
+
+// Helper to sanitize and format conversation history for Gemini multi-turn chat
+const formatChatHistory = (history: any[], newMessage: string) => {
+  const contents: { role: 'user' | 'model'; parts: { text: string }[] }[] = [];
+
+  if (Array.isArray(history)) {
+    for (const msg of history) {
+      if (!msg || !msg.content || typeof msg.content !== 'string') continue;
+      const role = msg.role === 'user' ? 'user' : 'model';
+
+      // Gemini requires the conversation history to start with a 'user' turn
+      if (contents.length === 0 && role === 'model') {
+        continue;
+      }
+
+      // Merge consecutive messages from the same role
+      if (contents.length > 0 && contents[contents.length - 1].role === role) {
+        contents[contents.length - 1].parts[0].text += `\n\n${msg.content}`;
+      } else {
+        contents.push({
+          role,
+          parts: [{ text: msg.content }],
+        });
+      }
+    }
+  }
+
+  // Ensure the new message is appended as a 'user' turn
+  if (contents.length > 0 && contents[contents.length - 1].role === 'user') {
+    contents[contents.length - 1].parts[0].text += `\n\n${newMessage}`;
+  } else {
+    contents.push({
+      role: 'user',
+      parts: [{ text: newMessage }],
+    });
+  }
+
+  return contents;
+};
+
 // Initialize Gemini Client safely
 const getGeminiClient = () => {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -64,8 +113,7 @@ Retorne ESTRITAMENTE um JSON no seguinte formato (sem formatação markdown envo
       },
     });
 
-    const text = response.text || '';
-    const questionData = JSON.parse(text);
+    const questionData = cleanAndParseJson(response.text || '{}');
     res.json({ success: true, data: questionData });
   } catch (error: any) {
     console.error('Error generating question:', error);
@@ -85,19 +133,7 @@ app.post('/api/gemini/tutor', async (req, res) => {
 Sua comunicação deve ser encorajadora, didática, precisa e fundamentada na legislação e diretrizes da saúde brasileira (COFEN, COREN, Ministério da Saúde, ANVISA, PNI/SUS).
 Sempre responda em Português do Brasil com explicações passo a passo (especialmente em cálculo de medicamentos, gotejamento de soro, interpretação de sinais vitais e procedimentos técnicos). Use emojis amigáveis e tópicos claros.`;
 
-    const chatContents = [];
-    if (Array.isArray(history) && history.length > 0) {
-      for (const msg of history) {
-        chatContents.push({
-          role: msg.role === 'user' ? 'user' : 'model',
-          parts: [{ text: msg.content }],
-        });
-      }
-    }
-    chatContents.push({
-      role: 'user',
-      parts: [{ text: message }],
-    });
+    const chatContents = formatChatHistory(history, message);
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.6-flash',
@@ -148,7 +184,7 @@ Forneça um relatório semanal detalhado, motivador e estratégico em formato JS
       },
     });
 
-    const reportData = JSON.parse(response.text || '{}');
+    const reportData = cleanAndParseJson(response.text || '{}');
     res.json({ success: true, data: reportData });
   } catch (error: any) {
     console.error('Error generating report:', error);
@@ -182,7 +218,7 @@ Retorne um JSON no formato:
       },
     });
 
-    const data = JSON.parse(response.text || '{}');
+    const data = cleanAndParseJson(response.text || '{}');
     res.json({ success: true, flashcards: data.flashcards || [] });
   } catch (error: any) {
     console.error('Error generating flashcards:', error);
@@ -225,7 +261,7 @@ Retorne ESTRITAMENTE um JSON no seguinte formato:
       },
     });
 
-    const data = JSON.parse(response.text || '{}');
+    const data = cleanAndParseJson(response.text || '{}');
     res.json({ success: true, questions: data.questions || [] });
   } catch (error: any) {
     console.error('Error generating daily questions batch:', error);
@@ -264,7 +300,7 @@ Forneça um JSON com a seguinte estrutura estrita:
       },
     });
 
-    const data = JSON.parse(response.text || '{}');
+    const data = cleanAndParseJson(response.text || '{}');
     res.json({ success: true, article: data });
   } catch (error: any) {
     console.error('Error generating study summary:', error);
